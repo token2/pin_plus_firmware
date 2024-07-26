@@ -4,7 +4,7 @@ Welcome to the official GitHub repository for our PIN+ Release2 FIDO2 Security K
 
 ## Overview
 
-This repository contains the source code for the Java Applet used in our FIDO2.1.final security keys with PIN complexity enforcement (PIN+). The goal is to provide a transparent view of our implementation and to contribute to the broader community of security key developers and researchers.
+This repository contains the source code for the Java Applet used in our FIDO2.1. security keys with PIN complexity enforcement (PIN+) and the 300 passkey storage capacity (Release 2). The goal is to provide a transparent view of our implementation and to contribute to the broader community of security key developers and researchers.
 
 
 
