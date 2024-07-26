@@ -1,4 +1,4 @@
-package us.q3q.fido2;
+package ch.token2.fido2;
 
 import javacard.framework.*;
 import javacard.security.*;
