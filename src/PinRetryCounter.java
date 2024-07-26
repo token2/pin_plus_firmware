@@ -1,4 +1,4 @@
-package us.q3q.fido2;
+package ch.token2.fido2;
 
 /**
  * Flash-stored counter for managing PIN retries. Can only be decremented, read, or reset.
