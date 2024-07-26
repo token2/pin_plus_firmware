@@ -138,7 +138,7 @@ Some of our FIDO2 security keys support both NFC and USB interfaces. The USB bri
 
 ### Support and Maintenance
 
-Please note that our team is currently unable to offer support for installation or troubleshooting due to capacity constraints. We encourage the community to experiment with the code and share any findings or improvements via pull requests or issues, but we cannot provide direct assistance with:
+Please note that our team is currently unable to offer support for installation or troubleshooting due to capacity constraints. We encourage the community to experiment with the code and share any findings or improvements, but we cannot provide direct assistance with:
 
 - Debugging installation issues.
 - Modifying the code for specific hardware compatibility.
