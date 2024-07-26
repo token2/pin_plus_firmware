@@ -159,4 +159,4 @@ The code is provided "as-is" and without warranty of any kind. Users are respons
 
 For inquiries related to this project, please reach out via the contact form: [contact us](https://token2.com/contact).
 
-Thank you for your interest in our FIDO2 Security Key project!
+Thank you for your interest in our project!
