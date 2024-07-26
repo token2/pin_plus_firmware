@@ -6,6 +6,31 @@ Welcome to the official GitHub repository for our PIN+ Release2 FIDO2 Security K
 
 This repository contains the source code for the Java Applet used in our FIDO2.1.final security keys with PIN complexity enforcement (PIN+). The goal is to provide a transparent view of our implementation and to contribute to the broader community of security key developers and researchers.
 
+
+
+## Storage Architecture
+
+The applet uses a structured approach to manage passkey storage, designed for efficiency given JavaCard's limitations. Specifically, the PIN+ R2 300 passkey management is implemented as follows:
+
+- The `short` data type on JavaCard allows for a maximum of 32,767 bytes.
+- Each passkey requires approximately 400 bytes of storage.
+- To accommodate 300 passkeys, they are divided into 6 classes, with each class containing 50 passkeys.
+
+The storage for each class is allocated as:
+
+- **1st 50 passkeys:** `new[20000]`
+- **2nd 50 passkeys:** `new[20000]`
+- **3rd 50 passkeys:** `new[20000]`
+- **4th 50 passkeys:** `new[20000]`
+- **5th 50 passkeys:** `new[20000]`
+- **6th 50 passkeys:** `new[20000]`
+
+Each class's allocation (`20000 bytes`) fits within the `short` limit, allowing for efficient storage management and retrieval.
+
+
+
+
+
 ## Important Notes
 
 ### Hardware Compatibility
