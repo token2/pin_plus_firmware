@@ -1,7 +1,7 @@
 MIT License
 
-Copyright (c) 2024 Token2 Sarl
 Copyright (c) 2022 Bryan Jacobs
+Copyright (c) 2024 Token2 Sarl*
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,3 +20,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+-------------------------------------------------------------------------------
+
+* Additional Contributions by Token2 Sarl:
+
+Token2 Sarl has contributed to this software by implementing improvements such as enhanced PIN complexity and extended storage capabilities.
