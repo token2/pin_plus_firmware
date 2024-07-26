@@ -26,9 +26,7 @@ We appreciate your understanding.
 
 This project is licensed under the  MIT License - see the LICENSE file for details.
 
-## Contributions and Acknowledgements
-
-We welcome contributions to this repository. If you have improvements or modifications, please submit a pull request. Before doing so, please review our contribution guidelines in the [CONTRIBUTING](CONTRIBUTING.md) file.
+## Acknowledgements
 
 Portions of this code are used from the [FIDO2Applet](https://github.com/BryanJacobs/FIDO2Applet) project. We extend our thanks to the authors and contributors of this project.
 
