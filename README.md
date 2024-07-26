@@ -134,7 +134,7 @@ The `CustomFunction.java` file implements the PIN complexity rules for the FIDO2
 While the provided code can be compiled and installed on standard JavaCard-compliant smart cards, **specific hardware chips might require** tweaks to ensure proper functionality. The behavior of the applet can vary depending on the JavaCard platform, card firmware, and chip characteristics. This code was implemented and tested on THD 89 and J3H145 (NXP JCOP3) chips only.
 
 ### USB and NFC Functionality
-Our FIDO2 security keys support both NFC and USB interfaces. The USB bridging is handled by a third-party solution, and the manufacturer has not released the source code. However, Linux users can use the Linux Virtual USB-HID FIDO2 device project to access USB functionality:  [FIDO2 HID Bridge](https://github.com/BryanJacobs/fido2-hid-bridge/) .
+Some of our FIDO2 security keys support both NFC and USB interfaces. The USB bridging is handled by a third-party solution, and the manufacturer has not released the source code. However, Linux users can use the Linux Virtual USB-HID FIDO2 device project to access USB functionality:  [FIDO2 HID Bridge](https://github.com/BryanJacobs/fido2-hid-bridge/) .
 
 ### Support and Maintenance
 
