@@ -125,7 +125,7 @@ The `CustomFunction.java` file implements the PIN complexity rules for the FIDO2
   }
   ```
 
-
+https://www.token2.com/site/page/token2-fido2-pin-see-the-pin-complexity-in-action 
 
 ## Important Notes
 
