@@ -1,4 +1,4 @@
-# Token2 PIN+ Release2 FIDO2 Security Keys - Java Applet Source Code
+# Token2 PIN+ FIDO2 Security Keys - Java Applet Source Code
 <img height="150"    src="https://www.token2.com/shop/content/products/89/tmb_2001.jpg" align="right">
 Welcome to the official GitHub repository for our PIN+ Release2 FIDO2 Security Keys Java Applet source code! This repository is intended to make our source code publicly available for review, research, and educational purposes.
 
@@ -10,7 +10,7 @@ This repository contains the source code for the Java Applet used in our FIDO2.1
 
 ## Storage Architecture
 
-The applet uses a structured approach to manage passkey storage, designed for efficiency given JavaCard's limitations. Specifically, the PIN+ R2 300 passkey management is implemented as follows:
+The applet uses a structured approach to manage passkey storage, designed for efficiency given JavaCard's limitations. Specifically, the PIN+ Release2 300 passkey storage is implemented as follows:
 
 - The `short` data type on JavaCard allows for a maximum of 32,767 bytes.
 - Each passkey requires approximately 400 bytes of storage.
