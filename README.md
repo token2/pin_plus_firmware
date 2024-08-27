@@ -1,6 +1,6 @@
 # Token2 PIN+ FIDO2 Security Keys - Java Applet Source Code
 <img height="150"    src="https://www.token2.com/shop/content/products/89/tmb_2001.jpg" align="right">
-Welcome to the official GitHub repository for our PIN+ Release2 FIDO2 Security Keys Java Applet source code! This repository is intended to make our source code publicly available for review, research, and educational purposes.
+Welcome to the official GitHub repository for our PIN+  FIDO2 Security Keys Java Applet source code! This repository is intended to make our source code publicly available for review, research, and educational purposes.
 
 ## Overview
 
