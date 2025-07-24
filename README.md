@@ -160,7 +160,7 @@ Portions of this code are used from the [FIDO2Applet](https://github.com/BryanJa
 The code is provided "as-is" and without warranty of any kind. Users are responsible for ensuring the security and suitability of the code for their specific use case.
 
 ## Future Enhancements and Code Scope
-The actual code running on our devices may include future enhancements, such as additional applets like OpenPGP and increased storage capabilities. The code provided in this repository specifically pertains to the PIN+ Release2 series. Future developments and updates may not be reflected here. If we decide to open-source future releases, they may be hosted in separate repositories.
+The actual code running on our devices may include future enhancements, such as additional applets like OpenPGP and increased storage capabilities. The code provided in this repository specifically pertains to the FIDO2 applet of our PIN+  series. Future developments and updates may not be reflected here. If we decide to open-source other applets, they may be hosted in separate repositories.
 
 ## Contact
 
