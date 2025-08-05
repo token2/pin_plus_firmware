@@ -57,7 +57,8 @@ public class CustomFunction {
     // Define what you consider "other allowed" characters (e.g., symbols, emoji, etc.)
     private static boolean isOtherAllowed(char ch) {
         // Allow everything printable that's not a letter/digit
-        // Adjust this as needed
+        
         return !Character.isISOControl(ch) && !Character.isSurrogate(ch);
     }
 }
+
