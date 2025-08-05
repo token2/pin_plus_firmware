@@ -1,119 +1,132 @@
 package ch.token2.fido2;
 
-import java.nio.charset.StandardCharsets;
-
-public class CustomFunction {
-
-    public static final byte UPPER_LETTER = 0x01;
-    public static final byte LOWER_LETTER = 0x02;
-    public static final byte DIGIT_CHAR = 0x04;
-    public static final byte OTHER_CHAR = 0x08;
-    public static final byte INVALID_CHAR = (byte) 0x80;
-
-    // === Complexity & format validation ===
-    public static boolean IsCorrectFormat(byte[] ps1Input, short s2Offset, short s2Len, byte s1Type, short s2TypeNum) {
-        try {
-            String pin = new String(ps1Input, s2Offset, s2Len, StandardCharsets.UTF_8);
-
-            byte s1CurType = 0x00;
-            short s2CurTypeNum = 0;
-
-            for (int i = 0; i < pin.length(); i++) {
-                byte s1TempType = GetFormatType(pin.charAt(i));
-                if (s1TempType == INVALID_CHAR) return false;
-                if ((s1Type & s1TempType) == 0x00) return false;
-                if ((s1CurType & s1TempType) == 0x00) {
-                    s1CurType |= s1TempType;
-                    s2CurTypeNum++;
+public class CustomFunction  
+{
+    // true: There is no case of identical increment.
+    public static boolean IsCorrectDelta(byte[] ps1Input, short s2Offset, short s2Len)
+    {
+        final byte s1Delta;
+        
+        s1Delta = (byte)(ps1Input[s2Offset]-ps1Input[(short)(s2Offset+1)]);
+        for ( short i=(short)(s2Offset+1); i<(short)(s2Offset+s2Len-1); i++ )
+        {
+            if ( (byte)(ps1Input[i]-ps1Input[(short)(i+1)]) != s1Delta )
+            {
+                return true;
+            }
+        }    
+        return false;
+    }
+    
+    // true: There is no mirrored situation.
+    public static boolean IsNonMirrored(byte[] ps1Input, short s2Offset, short s2Len)
+    {
+        short s2Head, s2Tail;
+        
+        s2Head = s2Offset;
+        s2Tail = (short)(s2Offset+s2Len-1);
+        while ( s2Tail > s2Head )
+        {
+            if (ps1Input[s2Head] != ps1Input[s2Tail])
+            {
+                return true;
+            }
+            s2Head++;
+            s2Tail--;
+        }
+        return false;
+    }
+    
+    // true: There is no occurrence of consecutive characters appearing in sequence.
+    public static boolean IsNonContinuousChar(byte[] ps1Input, short s2Offset, short s2Len, short s2MaxTimes)
+    {
+        byte s1CurChar;
+        short s2CurTimes;
+        
+        s1CurChar = ps1Input[s2Offset];
+        s2CurTimes = (short)1;
+        for ( short i=(short)(s2Offset+1); i<(short)(s2Offset+s2Len); i++ )
+        {
+            if ( ps1Input[i] == s1CurChar )
+            {
+                s2CurTimes++;
+                if ( s2CurTimes > s2MaxTimes )
+                {
+                    return false;
                 }
             }
-
-            return s2CurTypeNum >= s2TypeNum;
-
-        } catch (Exception e) {
-            return false;
+            else
+            {
+                s1CurChar = ps1Input[i];
+                s2CurTimes = (short)1;
+            }
         }
+        
+        return true;
     }
-
-    public static byte GetFormatType(char ch) {
-        if (Character.isUpperCase(ch)) {
+    
+    public static final byte UPPER_LETTER            =    (byte)0x01;
+    public static final byte LOWER_LETTER            =    (byte)0x02;
+    public static final byte DIGIT_CHAR                =    (byte)0x04;
+    public static final byte OTHER_CHAR                =    (byte)0x08;
+    public static final byte NON_ASCII_CHAR            =    (byte)0x10;  // New constant for non-ASCII chars
+    public static final byte INVALID_CHAR            =    (byte)0x80;
+    
+    // Check if the data meets the specified character type s1Type 
+    // and the number of character categories is greater than or equal to s2TypeNum
+    public static boolean IsCorrectFormat(byte[] ps1Input, short s2Offset, short s2Len, byte s1Type, short s2TypeNum)
+    {
+        byte s1CurType;
+        byte s1TempType;
+        short s2CurTypeNum;
+        
+        s1CurType = (byte)0x00;
+        s2CurTypeNum = (short)0;
+        for ( short i=s2Offset; i<(short)(s2Offset+s2Len); i++ )
+        {
+            s1TempType = GetFormatType(ps1Input[i]);
+            if ( INVALID_CHAR == s1TempType )
+            {
+                return false;
+            }
+            if ( (byte)0x00 == (byte)(s1Type&s1TempType) )
+            {
+                return false;
+            }
+            if ( (byte)0x00 == (byte)(s1CurType&s1TempType) )
+            {
+                s1CurType |= s1TempType;
+                s2CurTypeNum++;
+            }
+        }
+        return s2CurTypeNum >= s2TypeNum;
+    }
+    
+    public static byte GetFormatType(byte s1Char)
+    {
+        if ( s1Char >= (byte)0x41 && s1Char <= (byte)0x5A )
+        {
             return UPPER_LETTER;
-        } else if (Character.isLowerCase(ch)) {
+        }
+        else if ( s1Char >= (byte)0x61 && s1Char <= (byte)0x7A )
+        {
             return LOWER_LETTER;
-        } else if (Character.isDigit(ch)) {
+        }
+        else if ( s1Char >= (byte)0x30 && s1Char <= (byte)0x39 )
+        {
             return DIGIT_CHAR;
-        } else if (isOtherAllowed(ch)) {
+        }
+        else if ( s1Char >= (byte)0x20 && s1Char <= (byte)0x7E )
+        {
             return OTHER_CHAR;
-        } else {
+        }
+        else if ( (s1Char & 0x80) != 0 )
+        {
+            return NON_ASCII_CHAR;  // Accept non-ASCII characters (UTF-8)
+        }
+        else
+        {
             return INVALID_CHAR;
-        }
-    }
-
-    private static boolean isOtherAllowed(char ch) {
-        // Allow any visible non-control character
-        return !Character.isISOControl(ch) && !Character.isSurrogate(ch);
-    }
-
-    // === Repetition Check: No more than s2MaxTimes same char in a row ===
-    public static boolean IsNonContinuousChar(byte[] ps1Input, short s2Offset, short s2Len, short s2MaxTimes) {
-        try {
-            String pin = new String(ps1Input, s2Offset, s2Len, StandardCharsets.UTF_8);
-            if (pin.isEmpty()) return true;
-
-            char prevChar = pin.charAt(0);
-            short count = 1;
-
-            for (int i = 1; i < pin.length(); i++) {
-                char ch = pin.charAt(i);
-                if (ch == prevChar) {
-                    count++;
-                    if (count > s2MaxTimes) return false;
-                } else {
-                    prevChar = ch;
-                    count = 1;
-                }
-            }
-
-            return true;
-
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    // === Delta Check: no constant increments like "abcd" or "4321" ===
-    public static boolean IsCorrectDelta(byte[] ps1Input, short s2Offset, short s2Len) {
-        try {
-            String pin = new String(ps1Input, s2Offset, s2Len, StandardCharsets.UTF_8);
-            if (pin.length() < 2) return true;
-
-            int delta = pin.charAt(0) - pin.charAt(1);
-            for (int i = 1; i < pin.length() - 1; i++) {
-                int currentDelta = pin.charAt(i) - pin.charAt(i + 1);
-                if (currentDelta != delta) return true;
-            }
-
-            return false; // Pattern was sequential
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    // === Mirror Check: not a palindrome ===
-    public static boolean IsNonMirrored(byte[] ps1Input, short s2Offset, short s2Len) {
-        try {
-            String pin = new String(ps1Input, s2Offset, s2Len, StandardCharsets.UTF_8);
-            int len = pin.length();
-
-            for (int i = 0; i < len / 2; i++) {
-                if (pin.charAt(i) != pin.charAt(len - 1 - i)) {
-                    return true;
-                }
-            }
-
-            return false; // It's a palindrome
-        } catch (Exception e) {
-            return false;
         }
     }
 }
