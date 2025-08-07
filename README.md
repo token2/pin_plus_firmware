@@ -135,7 +135,7 @@ As of the latest update (release 3.1 and newer) , the firmware now supports **Un
 - Any valid UTF-8 encoded character
 
 This change improves flexibility and supports international users while preserving PIN format validation and complexity checks.  PIN complexity is still enforced. 
-The relevant PIN validation logic in [`CustomFunction.java`](https://github.com/token2/pin_plus_firmware/blob/e0ed38efa0f4afd90566a78645e5f699f6980d51/src/CustomFunction.java#L5) has been updated accordingly to handle UTF-8 encoded input and detect character types using Unicode-aware methods.
+The relevant PIN validation logic in [`CustomFunction.java`](https://github.com/token2/pin_plus_firmware/blob/e0ed38efa0f4afd90566a78645e5f699f6980d51/src/CustomFunction.java#L5) has been updated accordingly ( any non-ASCII characters are treated as their own class ).
 
 > **Note:** PINs are now interpreted as UTF-8 encoded byte arrays internally. 
 
