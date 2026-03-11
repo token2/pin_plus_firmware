@@ -1081,6 +1081,9 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
                 } else {
                     JCSystem.abortTransaction();
                 }
+                if ((foundMatchingRK || !ok) && JCSystem.isObjectDeletionSupported()) {
+                    JCSystem.requestObjectDeletion();
+                }
             }
         } else {
             // Non-resident credProtect Level 3 creds still need to use the high security key (to require PIN auth)
@@ -5033,6 +5036,9 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
                     }
                 }
 
+                if (JCSystem.isObjectDeletionSupported()) {
+                    JCSystem.requestObjectDeletion();
+                }
                 bufferManager.release(apdu, mainCredHandle, CREDENTIAL_PAYLOAD_LEN);
 
                 break;
