@@ -819,7 +819,7 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
             // Come back and verify PIN auth
             byte pinPermissions = transientStorage.getPinPermissions();
 
-            verifyPinAuth(apdu, buffer, pinAuthIdx, buffer, clientDataHashIdx, pinProtocol);
+            verifyPinAuth(apdu, buffer, pinAuthIdx, buffer, clientDataHashIdx, pinProtocol, true);
 
             if ((pinPermissions & FIDOConstants.PERM_MAKE_CREDENTIAL) == 0) {
                 // PIN token doesn't have permission for the MC operation
@@ -1362,16 +1362,18 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
     /**
      * Uses the currently-set pinToken to hash some data and compare against a verification value
      *
-     * @param apdu          Request/response object
-     * @param content       Buffer containing content to HMAC using the pinToken
-     * @param contentIdx    Index of content in given buffer
-     * @param contentLen    Length of content
-     * @param checkAgainst  Buffer containing "correct" hash we're looking for
-     * @param checkIdx      Index of correct hash in corresponding buffer
-     * @param pinProtocol   Integer PIN protocol version number
+     * @param apdu            Request/response object
+     * @param content         Buffer containing content to HMAC using the pinToken
+     * @param contentIdx      Index of content in given buffer
+     * @param contentLen      Length of content
+     * @param checkAgainst    Buffer containing "correct" hash we're looking for
+     * @param checkIdx        Index of correct hash in corresponding buffer
+     * @param pinProtocol     Integer PIN protocol version number
+     * @param invalidateToken If true, consider invalidating the PIN token
      */
     private void checkPinToken(APDU apdu, byte[] content, short contentIdx, short contentLen,
-                               byte[] checkAgainst, short checkIdx, byte pinProtocol) {
+                               byte[] checkAgainst, short checkIdx, byte pinProtocol,
+                               boolean invalidateToken) {
         if (pinProtocol != transientStorage.getPinProtocolInUse()) {
             // Can't use PIN protocol 1 with tokens created with v2 or vice versa
             sendErrorByte(apdu, FIDOConstants.CTAP2_ERR_PIN_AUTH_INVALID);
@@ -1400,7 +1402,7 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
 
         bufferManager.release(apdu, scratchHandle, (short) 32);
 
-        if (ONE_USE_PER_PIN_TOKEN) {
+        if (invalidateToken && ONE_USE_PER_PIN_TOKEN) {
             transientStorage.setPinProtocolInUse((byte) 3, (byte) 0);
         }
     }
@@ -1414,10 +1416,11 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
      * @param clientDataHashBuffer Buffer containing client data hash
      * @param clientDataHashIdx    Index of the hash of the clientData object, as given by the platform
      * @param pinProtocol          Integer PIN protocol number
+     * @param invalidateToken      If true, consider invalidating the PIN token
      */
     private void verifyPinAuth(APDU apdu, byte[] buffer, short readIdx,
                                byte[] clientDataHashBuffer, short clientDataHashIdx,
-                               byte pinProtocol) {
+                               byte pinProtocol, boolean invalidateToken) {
         byte desiredLength = 16;
         if (pinProtocol == 2) {
             desiredLength = 32;
@@ -1455,7 +1458,7 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
         }
 
         checkPinToken(apdu, clientDataHashBuffer, clientDataHashIdx, CLIENT_DATA_HASH_LEN,
-                buffer, readIdx, pinProtocol);
+                buffer, readIdx, pinProtocol, invalidateToken);
     }
 
     /**
@@ -2111,21 +2114,20 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
                 }
 
                 // check the provided PIN
-                byte pinPermissions = transientStorage.getPinPermissions();
+                final byte pinPermissions = transientStorage.getPinPermissions();
+                final boolean shouldInvalidatePinToken = transientStorage.hasUPOption();
 
                 verifyPinAuth(apdu, buffer, pinAuthIdx, clientDataHashBuffer, clientDataHashIdx,
-                        stateKeepingBuffer[stateKeepingIdx]);
+                        stateKeepingBuffer[stateKeepingIdx], shouldInvalidatePinToken);
 
                 if ((pinPermissions & FIDOConstants.PERM_GET_ASSERTION) == 0) {
                     // PIN token doesn't have permission for the GA operation
                     sendErrorByte(apdu, FIDOConstants.CTAP2_ERR_PIN_AUTH_INVALID);
                 }
 
-				/* 
-                if (WRITES_INVALIDATE_PINS) {
+                if (WRITES_INVALIDATE_PINS && shouldInvalidatePinToken) {
                     transientStorage.setPinProtocolInUse((byte) 3, (byte) 0);
                 }
-				*/
 
                 stateKeepingBuffer[(short)(stateKeepingIdx + 1)] |= 0x01;
             }
@@ -3912,7 +3914,7 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
                 byte pinPerms = transientStorage.getPinPermissions();
 
                 checkPinToken(apdu, scratch, scratchOffset, (short) 70,
-                        reqBuffer, pinUvAuthIdx, pinProtocol);
+                        reqBuffer, pinUvAuthIdx, pinProtocol, true);
 
                 if ((pinPerms & FIDOConstants.PERM_LARGE_BLOB_WRITE) == 0x00) {
                     sendErrorByte(apdu, FIDOConstants.CTAP2_ERR_PIN_AUTH_INVALID);
@@ -4466,7 +4468,7 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
             }
 
             checkPinToken(apdu, scratchBuffer, scratchOffset, bufferSize,
-                    reqBuffer, authIndex, pinProtocol);
+                    reqBuffer, authIndex, pinProtocol, true);
 
             if (WRITES_INVALIDATE_PINS) {
                 transientStorage.setPinProtocolInUse((byte) 3, (byte) 0);
@@ -4747,10 +4749,10 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
                 // Straight-up mangle the input buffer to put the command byte immediately before the subcommand params
                 buffer[(short)(subCommandParamsIdx - 1)] = buffer[subCommandIdx];
                 checkPinToken(apdu, buffer, (short) (subCommandParamsIdx - 1), (short) (subCommandParamsLen + 1),
-                        buffer, readIdx, pinProtocol);
+                        buffer, readIdx, pinProtocol, true);
             } else {
                 checkPinToken(apdu, buffer, subCommandIdx, (short) 1,
-                        buffer, readIdx, pinProtocol);
+                        buffer, readIdx, pinProtocol, true);
             }
         }
 
