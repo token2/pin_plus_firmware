@@ -4324,9 +4324,9 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
         transientStorage.setOutgoingContinuation(outgoingOffset, outgoingRemaining);
         if (chaining) {
             if (outgoingRemaining >= 256) {
-                throwException(ISO7816.SW_BYTES_REMAINING_00);
+                throwException(ISO7816.SW_BYTES_REMAINING_00, false);
             } else if (outgoingRemaining > 0) {
-                throwException((short) (ISO7816.SW_BYTES_REMAINING_00 + outgoingRemaining));
+                throwException((short) (ISO7816.SW_BYTES_REMAINING_00 + outgoingRemaining), false);
             }
             transientStorage.clearOutgoingContinuation();
         }
