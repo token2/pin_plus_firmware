@@ -2121,11 +2121,9 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
                     sendErrorByte(apdu, FIDOConstants.CTAP2_ERR_PIN_AUTH_INVALID);
                 }
 
-				/* 
                 if (WRITES_INVALIDATE_PINS) {
                     transientStorage.setPinProtocolInUse((byte) 3, (byte) 0);
                 }
-				*/
 
                 stateKeepingBuffer[(short)(stateKeepingIdx + 1)] |= 0x01;
             }
@@ -7358,5 +7356,4 @@ public final class FIDO2Applet extends Applet implements ExtendedLength {
     }
 
 }
-
 
